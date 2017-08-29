@@ -6,14 +6,15 @@ import threading
 from urllib.parse import unquote, parse_qs
 from socketserver import ThreadingMixIn
 
+
 class ThreadHTTPServer(ThreadingMixIn, http.server.HTTPServer):
     "This is an HTTPServer that supports thread-based concurrency."
 
 
-
 memory = {}
 
-form = '''<!DOCTYPE html>
+form = '''
+<!DOCTYPE html>
 <title>Bookmark Server</title>
 <form method="POST">
     <label>Long URI:
@@ -114,8 +115,18 @@ class ShortCenter(http.server.BaseHTTPRequestHandler):
             self.wfile.write(
                 "Couldn't fetch URI '{}'. Sorry!".format(longuri).encode())
 
+
+def main():
+    try:
+        host = '127.0.0.1'
+        port = int(os.environ.get('PORT', 8000))
+        server = ThreadHTTPServer((host, port), ShortCenter)
+        print("Web Server running on port http://{}:{}".format(host, port))
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print(" ^C entered, stopping web server....")
+        server.socket.close()
+
+
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8000))
-    server_address = ('', port)
-    httpd = ThreadHTTPServer(server_address, ShortCenter)
-    httpd.serve_forever()
+    main()
