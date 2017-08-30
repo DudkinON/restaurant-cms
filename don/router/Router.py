@@ -81,7 +81,7 @@ class Router:
         :param app:
         :return void:
         """
-        self.action = app
+        self.app = app
 
     def get_app(self):
         """Return current app
@@ -110,9 +110,10 @@ class Router:
         current_controller = self.get_controller()
         if current_controller is not None:
             self.controller = importlib.import_module(current_controller)
-            return getattr(self.controller, self.action)(self.action)
-
-
+            args = dict()
+            args['app'] = self.app
+            args['action'] = self.action
+            return getattr(self.controller, self.action)(args)
 
 
 if __name__ == '__main__':

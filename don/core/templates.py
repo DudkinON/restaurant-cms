@@ -1,6 +1,17 @@
-from jinja2 import Environment, PackageLoader, select_autoescape
-from don.router import get
-env = Environment(
-    loader=PackageLoader('yourapplication', 'templates'),
-    autoescape=select_autoescape(['html', 'xml'])
-)
+from don.dependencies.jinja2 import Environment, select_autoescape, \
+    FileSystemLoader
+from settings import settings
+
+
+def render(template, *args, **kwargs):
+    paths = []
+    for path in settings['apps']:
+        paths.append(settings['templates'] + '/' + path)
+    paths.append(settings['templates'])
+    env = Environment(
+        loader=FileSystemLoader(paths),
+        autoescape=select_autoescape(['html', 'xml']),
+        trim_blocks=True
+    )
+    return env.get_template(template).render(*args, **kwargs)
+

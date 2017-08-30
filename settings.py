@@ -16,9 +16,13 @@ settings = {
     # set controller file
     'controller': 'controller.py',
 
+    # set template folder
+    'templates': os.path.abspath(os.path.dirname(__file__) + '/templates'),
+
     # set list of apps
     'apps': [
         'main',
+        'restaurants',
     ],
 }
 
